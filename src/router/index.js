@@ -7,16 +7,16 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/reg'
+    redirect: '/register'
   },
   {
     // 注册路由 懒加载
-    path: '/reg',
+    path: '/register',
     component: register
   },
   {
     // 登录路由 懒加载
-    path: '/log',
+    path: '/login',
     component: login
   }
 ]

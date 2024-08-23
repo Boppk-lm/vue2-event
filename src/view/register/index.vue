@@ -25,7 +25,7 @@
 </template>
 
 <script>
-// import { reguser } from '@/api/reg'
+import { reguser } from '@/api/reg'
 export default {
   name: 'my-reg',
   data () {
@@ -65,10 +65,16 @@ export default {
     // 注册事件点击
     registerFn () {
       // 兜底验证
-      this.$refs.form.validate(valid => {
+      this.$refs.form.validate(async valid => {
         if (valid) {
-          console.log(this.form)
           // 通过验证
+          const { data } = await reguser(this.form)
+          console.log(data)
+          // 注册失败 return阻止继续往下执行
+          if (data.code !== 0) return this.$message.error(data.message)
+          // 注册成功
+          this.$message.success(data.message)
+          this.$router.replace('/login')
         } else {
           return false
         }
