@@ -6,6 +6,10 @@ Vue.use(VueRouter)
 
 const routes = [
   {
+    path: '/',
+    redirect: '/reg'
+  },
+  {
     // 注册路由 懒加载
     path: '/reg',
     component: register
