@@ -13,7 +13,7 @@
           <el-input type="password" v-model="form.password" placeholder="请输入密码"></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary" @click="registerFn" class="log-bth">登录</el-button>
+          <el-button type="primary" @click="loginFn" class="log-bth">登录</el-button>
           <el-link type="info" @click="$router.push('/register')">去注册</el-link>
         </el-form-item>
       </el-form>
@@ -22,6 +22,7 @@
 </template>
 
 <script>
+import { loguser } from '@/api/log'
 export default {
   name: 'my-log',
   data () {
@@ -29,7 +30,6 @@ export default {
       form: {
         username: '', // 用户名
         password: '' // 密码
-
       },
       rules: {
         // 用户名验证
@@ -43,6 +43,24 @@ export default {
           { pattern: /^\S{6,15}$/, message: '密码必须是6-15位', trigger: 'blur' }
         ]
       }
+    }
+  },
+  methods: {
+    // 点击登录
+    loginFn () {
+      // 兜底验证
+      this.$refs.form.validate(async valid => {
+        if (valid) {
+          // 通过验证
+          const { data } = await loguser(this.form)
+          // 登录失败
+          if (data.code !== 0) return this.$message.error(data.message)
+          // 登录成功
+          this.$message.success(data.message)
+        } else {
+          return false
+        }
+      })
     }
   }
 }
