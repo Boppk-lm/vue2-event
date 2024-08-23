@@ -25,6 +25,7 @@
 </template>
 
 <script>
+// import { reguser } from '@/api/reg'
 export default {
   name: 'my-reg',
   data () {
@@ -37,19 +38,22 @@ export default {
     }
     return {
       form: {
-        username: '',
-        password: '',
-        repassword: ''
+        username: '', // 用户名
+        password: '', // 密码
+        repassword: '' // 再次输入密码
       },
       rules: {
+        // 用户名验证
         username: [
           { required: true, message: '请输入用户名', trigger: 'blur' },
           { pattern: /^[a-zA-Z0-9]{1,10}$/, message: '用户名必须是1-10的大小写字母或数字', trigger: 'blur' }
         ],
+        // 密码验证
         password: [
           { required: true, message: '请输入密码', trigger: 'blur' },
           { pattern: /^\S{6,15}$/, message: '密码必须是6-15位', trigger: 'blur' }
         ],
+        // 再次输入密码验证
         repassword: [
           { required: true, message: '请再次输入密码', trigger: 'blur' },
           { validator: samePwdFn, trigger: 'blur' }
@@ -58,7 +62,17 @@ export default {
     }
   },
   methods: {
+    // 注册事件点击
     registerFn () {
+      // 兜底验证
+      this.$refs.form.validate(valid => {
+        if (valid) {
+          console.log(this.form)
+          // 通过验证
+        } else {
+          return false
+        }
+      })
     }
   }
 }
@@ -95,6 +109,7 @@ export default {
       height: 60px;
       background: url('../../assets/images/login_title.png') no-repeat center;
     }
+
     .reg-bth {
       width: 100%;
     }
