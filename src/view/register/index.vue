@@ -17,7 +17,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="registerFn" class="reg-bth">注册</el-button>
-          <el-link type="info">去登录</el-link>
+          <el-link type="info" @click="$router.push('/login')">去登录</el-link>
         </el-form-item>
       </el-form>
     </div>
@@ -74,7 +74,7 @@ export default {
           if (data.code !== 0) return this.$message.error(data.message)
           // 注册成功
           this.$message.success(data.message)
-          this.$router.replace('/login')
+          this.$router.push('/login')
         } else {
           return false
         }

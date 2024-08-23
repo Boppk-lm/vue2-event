@@ -7,7 +7,7 @@ Vue.use(VueRouter)
 const routes = [
   {
     path: '/',
-    redirect: '/register'
+    redirect: '/login'
   },
   {
     // 注册路由 懒加载
