@@ -64,6 +64,8 @@ export default {
           this.updateToken(data.token)
           // 将token进行本地存储
           setToken(data.token)
+          // 跳转到首页
+          this.$router.push('/')
         } else {
           return false
         }

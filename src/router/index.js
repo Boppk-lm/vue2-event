@@ -2,12 +2,14 @@ import Vue from 'vue'
 import VueRouter from 'vue-router'
 const register = () => import('@/view/register')
 const login = () => import('@/view/login')
+const layout = () => import('@/view/layout')
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    redirect: '/login'
+    // redirect: '/login'
+    component: layout
   },
   {
     // 注册路由 懒加载
