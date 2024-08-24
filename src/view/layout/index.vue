@@ -5,7 +5,7 @@
             <!-- logo -->
             <img src="../../assets/images/logo.png" alt="">
             <el-menu  class="el-menu-demo" mode="horizontal"
-                background-color="#1f232a" text-color="#fff" active-text-color="#1f232a">
+                background-color="#1f232a" text-color="#fff" active-text-color="#3f9cd6">
                 <el-submenu index="1">
                     <template slot="title">
                         <img src="../../assets/images/avatar.jpg"  class="avatar" alt="">
@@ -14,7 +14,7 @@
                     <el-menu-item index="1-2"><i class="el-icon-picture-outline-round"></i>更换头像</el-menu-item>
                     <el-menu-item index="1-3"><i class="el-icon-refresh-right"></i>重置密码</el-menu-item>
                 </el-submenu>
-                <el-menu-item index="2" ><i class="el-icon-switch-button"></i>退出</el-menu-item>
+                <el-menu-item index="2" @click="quit" ><i class="el-icon-switch-button"></i>退出</el-menu-item>
             </el-menu>
         </el-header>
         <!-- 侧边栏 -->
@@ -30,8 +30,41 @@
     </el-container>
 </template>
 <script>
+import { getUser } from '@/api/user'
+import { removeToken } from '@/utils/storage'
 export default {
-  name: 'my-layout'
+  name: 'my-layout',
+  methods: {
+    // 退出登录
+    quit () {
+      // 提示框
+      this.$confirm('这就走了, 你确定要离开我吗?', '大事件管理系统', {
+        confirmButtonText: '我走了',
+        cancelButtonText: '不会的',
+        type: 'warning'
+      }).then(() => {
+        // 退出成功
+        this.$message({
+          type: 'info',
+          message: '再见--'
+        })
+        // 删除本地和vuex的token 跳转到登录页面
+        removeToken()
+        this.$store.commit('updateToken', '')
+        this.$router.push('/login')
+      }).catch(() => {
+        // 退出失败
+        this.$message({
+          type: 'success',
+          message: '我就知道~'
+        })
+      })
+    }
+  },
+  async created () {
+    const res = await getUser()
+    console.log(res)
+  }
 }
 </script>
 
