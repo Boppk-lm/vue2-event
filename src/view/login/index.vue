@@ -23,10 +23,13 @@
 
 <script>
 import { loguser } from '@/api/log'
+import { mapMutations } from 'vuex'
+import { setToken } from '@/utils/storage'
 export default {
   name: 'my-log',
   data () {
     return {
+      ...mapMutations(['updateToken']),
       form: {
         username: '', // 用户名
         password: '' // 密码
@@ -57,6 +60,10 @@ export default {
           if (data.code !== 0) return this.$message.error(data.message)
           // 登录成功
           this.$message.success(data.message)
+          // 将token保存到vuex中
+          this.updateToken(data.token)
+          // 将token进行本地存储
+          setToken(data.token)
         } else {
           return false
         }
