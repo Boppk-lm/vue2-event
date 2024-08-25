@@ -19,7 +19,13 @@
         </el-header>
         <!-- 侧边栏 -->
         <el-container>
-            <el-aside width="200px">Aside</el-aside>
+            <el-aside width="200px">
+              <div class="user-box">
+                <img :src="user_pic" alt="" v-if="user_pic">
+                <img src="../../assets/images/logo.png" alt="" v-else>
+                <span>欢迎<span>{{ username || nickname }}</span></span>
+              </div>
+            </el-aside>
             <el-container>
                 <!-- 主体 -->
                 <el-main>Main</el-main>
@@ -31,6 +37,7 @@
 </template>
 <script>
 import { removeToken } from '@/utils/storage'
+import { mapGetters } from 'vuex'
 export default {
   name: 'my-layout',
   methods: {
@@ -51,6 +58,8 @@ export default {
         removeToken()
         this.$store.commit('updateToken', '')
         this.$router.push('/login')
+        // 删除用户信息
+        this.$store.commit('updateuser', {})
       }).catch(() => {
         // 退出失败
         this.$message({
@@ -63,6 +72,9 @@ export default {
   created () {
     // 从vuex获取用户数据
     this.$store.dispatch('getUserinfo')
+  },
+  computed: {
+    ...mapGetters(['username', 'nickname', 'user_pic'])
   }
 }
 </script>
@@ -120,5 +132,26 @@ body>.el-container {
 
 .el-container:nth-child(7) .el-aside {
     line-height: 320px;
+}
+.user-box {
+  height: 70px;
+  display: flex;
+  justify-content: center;
+  align-items: center;
+  border: 1px solid #000;
+  user-select: none;
+  img {
+    width: 35px;
+    height: 35px;
+    border-radius: 50%;
+    background-color: #fff;
+    object-fit: cover;
+    margin-right: 10px;
+  }
+  span {
+    margin-left: 5px;
+    color:#fff;
+    font-size: 12px;
+  }
 }
 </style>
