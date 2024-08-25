@@ -27,28 +27,21 @@
           <span>欢迎<span>{{ username || nickname }}</span></span>
         </div>
         <!-- 侧边栏 -->
-        <el-menu default-active="/home" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
-          background-color="#1b1e25" text-color="#fff" active-text-color="#2b81d4">
-          <el-menu-item index="/home">
-            <i class="el-icon-house"></i>
-            <span slot="title">首页</span>
+          <el-menu default-active="/home" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+          background-color="#1b1e25" text-color="#fff" active-text-color="#2b81d4" router>
+          <template v-for="item in menus">
+          <el-menu-item :index="item.indexPath" v-if="!item.children" :key="item.indexPath">
+            <i :class="item.icon"></i>
+            <span slot="title">{{ item.title }}</span>
           </el-menu-item>
-          <el-submenu index="/title">
+          <el-submenu :index="item.indexPath" v-else :key="item.indexPath">
             <template slot="title">
-              <i class="el-icon-s-order"></i>
-              <span>文章管理</span>
+              <i :class="item.icon"></i>
+              <span>{{ item.title }}</span>
             </template>
-              <el-menu-item index="/title1"><i class="el-icon-s-data"></i>文章分类</el-menu-item>
-              <el-menu-item index="/title2"><i class="el-icon-document"></i>文章列表</el-menu-item>
+              <el-menu-item v-for="obj in item.children" :index="obj.indexPath" :key="obj.indexPath"><i :class="obj.icon"></i>{{ obj.title }}</el-menu-item>
           </el-submenu>
-          <el-submenu index="/my">
-            <template slot="title">
-              <i class="el-icon-user"></i>
-              <span>个人中心</span>
-            </template>
-              <el-menu-item index="/my1"><i class="el-icon-s-data"></i>选项1</el-menu-item>
-              <el-menu-item index="/my2"><i class="el-icon-s-data"></i>选项2</el-menu-item>
-          </el-submenu>
+        </template>
         </el-menu>
       </el-aside>
       <el-container>
@@ -61,10 +54,16 @@
   </el-container>
 </template>
 <script>
+import { getMenus } from '@/api/user'
 import { removeToken } from '@/utils/storage'
 import { mapGetters } from 'vuex'
 export default {
   name: 'my-layout',
+  data () {
+    return {
+      menus: []
+    }
+  },
   methods: {
     // 退出登录
     quit () {
@@ -98,11 +97,19 @@ export default {
     },
     handleClose (key, keyPath) {
       console.log(key, keyPath)
+    },
+    // 保存侧边栏数据
+    async getMenus () {
+      const { data: { data: res } } = await getMenus()
+      this.menus = res
+      console.log(this.menus)
     }
   },
   created () {
     // 从vuex获取用户数据
     this.$store.dispatch('getUserinfo')
+    // 获取侧边栏数据
+    this.getMenus()
   },
   computed: {
     ...mapGetters(['username', 'nickname', 'user_pic'])

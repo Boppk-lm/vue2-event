@@ -10,3 +10,11 @@ export const getUser = () => {
     }
   })
 }
+// 获取侧边栏信息
+export const getMenus = () => {
+  return request.get('/my/menus', {
+    headers: {
+      Authorization: store.state.token
+    }
+  })
+}
