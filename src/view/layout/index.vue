@@ -30,7 +30,6 @@
     </el-container>
 </template>
 <script>
-import { getUser } from '@/api/user'
 import { removeToken } from '@/utils/storage'
 export default {
   name: 'my-layout',
@@ -61,9 +60,9 @@ export default {
       })
     }
   },
-  async created () {
-    const res = await getUser()
-    console.log(res)
+  created () {
+    // 从vuex获取用户数据
+    this.$store.dispatch('getUserinfo')
   }
 }
 </script>
