@@ -1,39 +1,64 @@
 <template>
-    <el-container style="height: 100%">
-        <!-- 头部 -->
-        <el-header>
-            <!-- logo -->
-            <img src="../../assets/images/logo.png" alt="">
-            <el-menu  class="el-menu-demo" mode="horizontal"
-                background-color="#1f232a" text-color="#fff" active-text-color="#3f9cd6">
-                <el-submenu index="1">
-                    <template slot="title">
-                        <img src="../../assets/images/avatar.jpg"  class="avatar" alt="">
-                       个人中心</template>
-                    <el-menu-item index="1-1"><i class="el-icon-tickets"></i>基本资料</el-menu-item>
-                    <el-menu-item index="1-2"><i class="el-icon-picture-outline-round"></i>更换头像</el-menu-item>
-                    <el-menu-item index="1-3"><i class="el-icon-refresh-right"></i>重置密码</el-menu-item>
-                </el-submenu>
-                <el-menu-item index="2" @click="quit" ><i class="el-icon-switch-button"></i>退出</el-menu-item>
-            </el-menu>
-        </el-header>
+  <el-container style="height: 100%">
+    <!-- 头部 -->
+    <el-header>
+      <!-- logo -->
+      <img src="../../assets/images/logo.png" alt="">
+      <el-menu class="el-menu-demo" mode="horizontal" background-color="#1f232a" text-color="#fff"
+        active-text-color="#3f9cd6">
+        <el-submenu index="1">
+          <template slot="title">
+            <img src="../../assets/images/avatar.jpg" class="avatar" alt="">
+            个人中心</template>
+          <el-menu-item index="1-1"><i class="el-icon-tickets"></i>基本资料</el-menu-item>
+          <el-menu-item index="1-2"><i class="el-icon-picture-outline-round"></i>更换头像</el-menu-item>
+          <el-menu-item index="1-3"><i class="el-icon-refresh-right"></i>重置密码</el-menu-item>
+        </el-submenu>
+        <el-menu-item index="2" @click="quit"><i class="el-icon-switch-button"></i>退出</el-menu-item>
+      </el-menu>
+    </el-header>
+    <!-- 侧边栏 -->
+    <el-container>
+      <el-aside width="200px">
+        <!-- 用户信息 -->
+        <div class="user-box">
+          <img :src="user_pic" alt="" v-if="user_pic">
+          <img src="../../assets/images/logo.png" alt="" v-else>
+          <span>欢迎<span>{{ username || nickname }}</span></span>
+        </div>
         <!-- 侧边栏 -->
-        <el-container>
-            <el-aside width="200px">
-              <div class="user-box">
-                <img :src="user_pic" alt="" v-if="user_pic">
-                <img src="../../assets/images/logo.png" alt="" v-else>
-                <span>欢迎<span>{{ username || nickname }}</span></span>
-              </div>
-            </el-aside>
-            <el-container>
-                <!-- 主体 -->
-                <el-main>Main</el-main>
-                <!-- 底部 -->
-                <el-footer><i class="el-icon-trophy"></i>www.3294578041@qq.com - lvdameng</el-footer>
-            </el-container>
-        </el-container>
+        <el-menu default-active="/home" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+          background-color="#1b1e25" text-color="#fff" active-text-color="#2b81d4">
+          <el-menu-item index="/home">
+            <i class="el-icon-house"></i>
+            <span slot="title">首页</span>
+          </el-menu-item>
+          <el-submenu index="/title">
+            <template slot="title">
+              <i class="el-icon-s-order"></i>
+              <span>文章管理</span>
+            </template>
+              <el-menu-item index="/title1"><i class="el-icon-s-data"></i>文章分类</el-menu-item>
+              <el-menu-item index="/title2"><i class="el-icon-document"></i>文章列表</el-menu-item>
+          </el-submenu>
+          <el-submenu index="/my">
+            <template slot="title">
+              <i class="el-icon-user"></i>
+              <span>个人中心</span>
+            </template>
+              <el-menu-item index="/my1"><i class="el-icon-s-data"></i>选项1</el-menu-item>
+              <el-menu-item index="/my2"><i class="el-icon-s-data"></i>选项2</el-menu-item>
+          </el-submenu>
+        </el-menu>
+      </el-aside>
+      <el-container>
+        <!-- 主体 -->
+        <el-main>Main</el-main>
+        <!-- 底部 -->
+        <el-footer><i class="el-icon-trophy"></i>www.3294578041@qq.com - lvdameng</el-footer>
+      </el-container>
     </el-container>
+  </el-container>
 </template>
 <script>
 import { removeToken } from '@/utils/storage'
@@ -67,6 +92,12 @@ export default {
           message: '我就知道~'
         })
       })
+    },
+    handleOpen (key, keyPath) {
+      console.log(key, keyPath)
+    },
+    handleClose (key, keyPath) {
+      console.log(key, keyPath)
     }
   },
   created () {
@@ -81,58 +112,59 @@ export default {
 
 <style lang="less" scoped>
 .el-header {
-    float: left;
-    color: #fff;
-    background-color: #1f232a;
-    line-height: 60px;
+  float: left;
+  color: #fff;
+  background-color: #1f232a;
+  line-height: 60px;
 }
 
 .el-header .el-menu-demo {
-    width: 15%;
-    float: right;
-    .avatar {
-        width: 40px;
-        height: 40px;
-        border-radius: 50%;
-        margin-right: 10px;
-    }
+  width: 15%;
+  float: right;
+
+  .avatar {
+    width: 40px;
+    height: 40px;
+    border-radius: 50%;
+    margin-right: 10px;
+  }
 }
 
 .el-footer {
-    background-color: #ededed;
-    color: #333;
-    text-align: center;
-    line-height: 60px;
-    .el-icon-trophy {
-        margin-right: 10px;
-    }
+  background-color: #ededed;
+  color: #333;
+  text-align: center;
+  line-height: 60px;
+
+  .el-icon-trophy {
+    margin-right: 10px;
+  }
 }
 
 .el-aside {
-    background-color: #1f232a;
-    color: #333;
-    text-align: center;
-    line-height: 200px;
+  background-color: #1f232a;
+  color: #333;
 }
 
 .el-main {
-    background-color: #fff;
-    color: #333;
-    line-height: 160px;
+  background-color: #fff;
+  color: #333;
+  line-height: 160px;
 }
 
 body>.el-container {
-    margin-bottom: 40px;
+  margin-bottom: 40px;
 }
 
 .el-container:nth-child(5) .el-aside,
 .el-container:nth-child(6) .el-aside {
-    line-height: 260px;
+  line-height: 260px;
 }
 
 .el-container:nth-child(7) .el-aside {
-    line-height: 320px;
+  line-height: 320px;
 }
+
 .user-box {
   height: 70px;
   display: flex;
@@ -140,6 +172,7 @@ body>.el-container {
   align-items: center;
   border: 1px solid #000;
   user-select: none;
+  box-sizing: border-box;
   img {
     width: 35px;
     height: 35px;
@@ -148,9 +181,10 @@ body>.el-container {
     object-fit: cover;
     margin-right: 10px;
   }
+
   span {
     margin-left: 5px;
-    color:#fff;
+    color: #fff;
     font-size: 12px;
   }
 }
