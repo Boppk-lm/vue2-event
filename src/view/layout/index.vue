@@ -156,7 +156,6 @@ export default {
 .el-main {
   background-color: #f2f2f2;
   color: #333;
-  line-height: 160px;
 }
 
 body>.el-container {

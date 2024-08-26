@@ -5,6 +5,7 @@ const register = () => import('@/view/register')
 const login = () => import('@/view/login')
 const layout = () => import('@/view/layout')
 const home = () => import('@/view/home')
+const user = () => import('@/view/user/userinfo.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -14,8 +15,14 @@ const routes = [
     component: layout,
     children: [
       {
+        // 主页
         path: 'home',
         component: home
+      },
+      {
+        // 基本资料
+        path: 'user-info',
+        component: user
       }
     ]
   },
