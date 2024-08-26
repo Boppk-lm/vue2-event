@@ -105,8 +105,6 @@ export default {
     }
   },
   created () {
-    // 从vuex获取用户数据
-    this.$store.dispatch('getUserinfo')
     // 获取侧边栏数据
     this.getMenus()
   },

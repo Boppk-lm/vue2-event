@@ -1,5 +1,8 @@
+import router from '@/router'
 import store from '@/store'
 import axios from 'axios'
+import { Message } from 'element-ui'
+import { removeToken } from './storage'
 
 // 创建axios实例 设置基地址
 const myaxios = axios.create({
@@ -26,6 +29,14 @@ myaxios.interceptors.response.use(function (response) {
 }, function (error) {
   // 超出 2xx 范围的状态码都会触发该函数。
   // 对响应错误做点什么
+  // 如果token过期 清除vuex和本地中的数据并跳转到登录页面
+  if (error.response.status === 401) {
+    store.commit('updateToken', '')
+    removeToken()
+    store.commit('updateuser', {})
+    router.push('/login')
+    Message.error('登录已过期，请重新登录')
+  }
   return Promise.reject(error)
 })
 
