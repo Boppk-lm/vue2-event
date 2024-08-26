@@ -46,7 +46,10 @@
       </el-aside>
       <el-container>
         <!-- 主体 -->
-        <el-main>Main</el-main>
+        <el-main>
+          <!-- 二级路由出口 -->
+          <router-view></router-view>
+        </el-main>
         <!-- 底部 -->
         <el-footer><i class="el-icon-trophy"></i>www.3294578041@qq.com - lvdameng</el-footer>
       </el-container>
@@ -151,7 +154,7 @@ export default {
 }
 
 .el-main {
-  background-color: #fff;
+  background-color: #f2f2f2;
   color: #333;
   line-height: 160px;
 }

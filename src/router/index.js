@@ -4,13 +4,20 @@ import store from '@/store'
 const register = () => import('@/view/register')
 const login = () => import('@/view/login')
 const layout = () => import('@/view/layout')
+const home = () => import('@/view/home')
 Vue.use(VueRouter)
 
 const routes = [
   {
     path: '/',
-    // redirect: '/login'
-    component: layout
+    redirect: '/home',
+    component: layout,
+    children: [
+      {
+        path: 'home',
+        component: home
+      }
+    ]
   },
   {
     // 注册路由 懒加载
