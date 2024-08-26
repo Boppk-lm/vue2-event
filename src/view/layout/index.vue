@@ -102,7 +102,6 @@ export default {
     async getMenus () {
       const { data: { data: res } } = await getMenus()
       this.menus = res
-      console.log(this.menus)
     }
   },
   created () {
