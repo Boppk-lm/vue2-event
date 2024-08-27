@@ -6,6 +6,7 @@ const login = () => import('@/view/login')
 const layout = () => import('@/view/layout')
 const home = () => import('@/view/home')
 const user = () => import('@/view/user/userinfo.vue')
+const avatar = () => import('@/view/user/useravatar.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -23,6 +24,11 @@ const routes = [
         // 基本资料
         path: 'user-info',
         component: user
+      },
+      {
+        // 用户头像
+        path: 'user-avatar',
+        component: avatar
       }
     ]
   },

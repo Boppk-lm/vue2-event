@@ -18,7 +18,7 @@
         </el-form-item>
         <el-form-item>
           <el-button type="primary" @click="submitFn">提交修改</el-button>
-          <el-button >重置</el-button>
+          <el-button @click="resetFn">重置</el-button>
         </el-form-item>
       </el-form>
   </div>
@@ -68,10 +68,12 @@ export default {
           return false
         }
       })
+    },
+    resetFn () {
+      this.$refs.formref.resetFields()
     }
   },
   created () {
-    console.log(this.userform.username)
   }
 }
 </script>
