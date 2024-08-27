@@ -8,7 +8,7 @@
   <div>
     <el-form ref="formref" :model="userform" :rules="rules" label-width="100px">
         <el-form-item prop="username" label="登录名称" style="width: 40%">
-          <el-input v-model="userform.username" disabled></el-input>
+          <el-input v-model="userform.username" disabled :placeholder="username"></el-input>
         </el-form-item>
         <el-form-item prop="nickname" label="用户昵称" style="width: 40%">
           <el-input  v-model="userform.nickname" minlength="1" maxlength="10" ></el-input>
@@ -17,7 +17,7 @@
           <el-input  v-model="userform.email" ></el-input>
         </el-form-item>
         <el-form-item>
-          <el-button type="primary">提交修改</el-button>
+          <el-button type="primary" @click="submitFn">提交修改</el-button>
           <el-button >重置</el-button>
         </el-form-item>
       </el-form>
@@ -27,14 +27,17 @@
 </template>
 
 <script>
+import { updateUser } from '@/api/user'
 export default {
   name: 'my-user',
   data () {
     return {
+      username: '请求失败，请重新刷新界面',
       userform: {
         username: this.$store.state.userinfo.username, // 用户名
         nickname: '', // 用户昵称
-        email: '' // 用户邮箱
+        email: '', // 用户邮箱
+        id: this.$store.state.userinfo.id // id
       },
       rules: {
         // 昵称验证
@@ -49,6 +52,26 @@ export default {
         ]
       }
     }
+  },
+  methods: {
+    // 修改用户信息
+    submitFn () {
+      // 兜底验证
+      this.$refs.formref.validate(async valid => {
+        if (valid) {
+          const { data: res } = await updateUser(this.userform)
+          if (res.code !== 0) return this.$message.error('更新用户失败')
+          this.$message.success('更新成功！')
+          // 让vuex重新获取最新的用户数据
+          this.$store.dispatch('getUserinfo')
+        } else {
+          return false
+        }
+      })
+    }
+  },
+  created () {
+    console.log(this.userform.username)
   }
 }
 </script>

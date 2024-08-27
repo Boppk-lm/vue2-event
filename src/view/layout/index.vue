@@ -24,10 +24,10 @@
         <div class="user-box">
           <img :src="user_pic" alt="" v-if="user_pic">
           <img src="../../assets/images/logo.png" alt="" v-else>
-          <span>欢迎<span>{{ username || nickname }}</span></span>
+          <span>欢迎<span>{{ nickname || username }}</span></span>
         </div>
         <!-- 侧边栏 -->
-          <el-menu default-active="/home" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
+          <el-menu :default-active="$route.path" class="el-menu-vertical-demo" @open="handleOpen" @close="handleClose"
           background-color="#1b1e25" text-color="#fff" active-text-color="#2b81d4" router>
           <template v-for="item in menus">
           <el-menu-item :index="item.indexPath" v-if="!item.children" :key="item.indexPath">
@@ -112,7 +112,7 @@ export default {
     this.getMenus()
   },
   computed: {
-    ...mapGetters(['username', 'nickname', 'user_pic'])
+    ...mapGetters(['username', 'nickname', 'user_pic', 'id'])
   }
 }
 </script>

@@ -4,9 +4,6 @@
 </template>
 <script>
 export default {
-  async created () {
-
-  }
 }
 </script>
 <style lang="less" scoped></style>

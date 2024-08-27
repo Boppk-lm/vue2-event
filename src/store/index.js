@@ -23,6 +23,10 @@ export default new Vuex.Store({
     // 用户头像
     user_pic (state) {
       return state.userinfo.user_pic
+    },
+    // id
+    id (state) {
+      return state.userinfo.id
     }
   },
   mutations: {

@@ -8,3 +8,13 @@ export const getUser = () => {
 export const getMenus = () => {
   return request.get('/my/menus')
 }
+// 修改用户信息
+export const updateUser = ({ id, username, email, nickname, user_pic }) => {
+  return request.put('/my/userinfo', {
+    id,
+    username,
+    nickname,
+    email,
+    user_pic
+  })
+}
