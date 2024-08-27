@@ -24,3 +24,11 @@ export const updateAvatar = (avatar) => {
     avatar
   })
 }
+// 重置密码
+export const updatePwd = ({ old_pwd, new_pwd, re_pwd }) => {
+  return request.patch('/my/updatepwd', {
+    old_pwd,
+    new_pwd,
+    re_pwd
+  })
+}

@@ -7,6 +7,7 @@ const layout = () => import('@/view/layout')
 const home = () => import('@/view/home')
 const user = () => import('@/view/user/userinfo.vue')
 const avatar = () => import('@/view/user/useravatar.vue')
+const userpwd = () => import('@/view/user/userpwd.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -29,6 +30,10 @@ const routes = [
         // 用户头像
         path: 'user-avatar',
         component: avatar
+      },
+      {
+        path: 'user-pwd',
+        component: userpwd
       }
     ]
   },

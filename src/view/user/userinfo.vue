@@ -72,8 +72,6 @@ export default {
     resetFn () {
       this.$refs.formref.resetFields()
     }
-  },
-  created () {
   }
 }
 </script>
