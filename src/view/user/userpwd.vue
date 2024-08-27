@@ -28,6 +28,7 @@
 
 <script>
 import { updatePwd } from '@/api/user'
+import { removeToken } from '@/utils/storage'
 export default {
   name: 'user-pwd',
   data () {
@@ -81,10 +82,14 @@ export default {
         if (valid) {
           const { data: res } = await updatePwd(this.pwdform)
           console.log(res)
-          if (res.code !== 0) return this.$message.error('修改密码失败')
+          if (res.code !== 0) return this.$message.error('原密码错误')
           this.$message.success('修改成功！')
-          // 重置表单
-          this.resetFn()
+          // 删除本地和vuex的token 跳转到登录页面
+          removeToken()
+          this.$store.commit('updateToken', '')
+          this.$router.push('/login')
+          // 删除用户信息
+          this.$store.commit('updateuser', {})
         } else {
           return false
         }
