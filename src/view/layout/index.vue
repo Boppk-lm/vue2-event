@@ -8,7 +8,8 @@
         active-text-color="#3f9cd6">
         <el-submenu index="1">
           <template slot="title">
-            <img src="../../assets/images/avatar.jpg" class="avatar" alt="">
+            <img :src="user_pic" alt="" v-if="user_pic" class="avatar">
+            <img src="../../assets/images/logo.png" alt="" v-else class="avatar">
             个人中心</template>
           <el-menu-item index="1-1"><i class="el-icon-tickets"></i>基本资料</el-menu-item>
           <el-menu-item index="1-2"><i class="el-icon-picture-outline-round"></i>更换头像</el-menu-item>

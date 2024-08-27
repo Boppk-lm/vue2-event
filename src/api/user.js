@@ -18,3 +18,9 @@ export const updateUser = ({ id, username, email, nickname, user_pic }) => {
     user_pic
   })
 }
+// 更换用户头像
+export const updateAvatar = (avatar) => {
+  return request.patch('/my/update/avatar', {
+    avatar
+  })
+}
