@@ -13,3 +13,20 @@ export const addarticle = ({ cate_name, cate_alias }) => {
     cate_alias
   })
 }
+
+// 修改文章数据
+export const updatearticle = ({ cate_name, cate_alias, id }) => {
+  return request.put('/my/cate/info', {
+    id,
+    cate_name,
+    cate_alias
+  })
+}
+// 删除文章数据
+export const deletearticle = (id) => {
+  return request.delete('/my/cate/del', {
+    params: {
+      id
+    }
+  })
+}

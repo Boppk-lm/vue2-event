@@ -14,13 +14,16 @@
                 </el-table-column>
                 <el-table-column prop="cate_alias" label="分类别名">
                 </el-table-column>
-                <el-table-column label="分类别名">
-                    <el-button type="primary" size="mini">修改</el-button>
-                    <el-button type="danger" size="mini">删除</el-button>
+                <el-table-column label="操作">
+                    <template v-slot="scope">
+                      <!--  获取这一行数据 -->
+                      <el-button type="primary" size="mini" @click="updateArt(scope.row)">修改</el-button>
+                      <el-button type="danger" size="mini" @click="delArt(scope.row)">删除</el-button>
+                    </template>
                 </el-table-column>
             </el-table>
             <!-- 添加文章 -->
-            <el-dialog title="添加文章分类" :visible.sync="dialogVisible" width="30%" @close="dialogCloseFn">
+            <el-dialog title="文章分类" :visible.sync="dialogVisible" width="30%" @close="dialogCloseFn">
                 <!-- 文章信息 -->
                 <el-form ref="addref" :model="addform" :rules="rules" label-width="80px">
                     <el-form-item prop="cate_name" label="分类名称" >
@@ -40,7 +43,7 @@
 </template>
 
 <script>
-import { addarticle, getarticle } from '@/api/article'
+import { addarticle, deletearticle, getarticle, updatearticle } from '@/api/article'
 
 export default {
   name: 'art-cate',
@@ -63,7 +66,9 @@ export default {
           { required: true, message: '请输入分类别名', trigger: 'blur' },
           { pattern: /^[a-zA-Z0-9]{1,15}$/, message: '分类别名必须是1-15位的字母数字', trigger: 'blur' }
         ]
-      }
+      },
+      isEdit: false, // true为编辑 false为新增
+      editId: '' // 要编辑文章的id值
     }
   },
   created () {
@@ -77,18 +82,31 @@ export default {
     },
     // 新增文章数据弹出对话框
     addArtFn () {
+      this.isEdit = false // 变为新增
+      this.editId = ''
       this.dialogVisible = true
     },
-    // 确认新增
+    // 确认新增或编辑
     confirmFn () {
       this.dialogVisible = false
       // 兜底验证
       this.$refs.addref.validate(async valid => {
         if (valid) {
         // 通过验证
-          const { data: res } = await addarticle(this.addform)
-          if (res.code !== 0) return this.$message.error('新增文章失败')
-          this.$message.success('新增文章成功')
+        // 进行判断 是编辑还是新增
+          if (this.isEdit) {
+          // 编辑
+            const id = this.editId
+            this.addform.id = id
+            const { data: res } = await updatearticle(this.addform)
+            if (res.code !== 0) return this.$message.error(res.message)
+            this.$message.success(res.message)
+          } else {
+          // 新增
+            const { data: res } = await addarticle(this.addform)
+            if (res.code !== 0) return this.$message.error(res.message)
+            this.$message.success(res.message)
+          }
           // 重新获取文章数据
           this.getartlist()
         } else {
@@ -103,6 +121,45 @@ export default {
     // 取消对话框时的回调
     dialogCloseFn () {
       this.$refs.addref.resetFields()
+      this.addform.cate_alias = ''
+      this.addform.cate_name = ''
+    },
+    // 修改文章
+    updateArt (obj) {
+      this.dialogVisible = true
+      this.isEdit = true // 变为编辑
+      this.editId = obj.id
+      // 数据回显
+      this.addform.cate_name = obj.cate_name
+      this.addform.cate_alias = obj.cate_alias
+    },
+    // 删除文章
+    async delArt (obj) {
+      this.editId = obj.id
+      const { data: res } = await deletearticle(this.editId)
+      // 确认弹框
+      this.$confirm('此操作将永久删除该文章, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        // 确认删除
+        if (res.code === 0) {
+          this.$message({
+            type: 'success',
+            message: res.message
+          })
+          // 重新获取文章
+          this.getartlist()
+        } else {
+          this.$message({
+            type: 'error',
+            message: res.message
+          })
+        }
+      }).catch(() => {
+        // 取消删除
+      })
     }
   }
 }
