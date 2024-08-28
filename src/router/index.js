@@ -8,6 +8,7 @@ const home = () => import('@/view/home')
 const user = () => import('@/view/user/userinfo.vue')
 const avatar = () => import('@/view/user/useravatar.vue')
 const userpwd = () => import('@/view/user/userpwd.vue')
+const atrcate = () => import('@/view/article/artCate.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -34,7 +35,12 @@ const routes = [
       {
         path: 'user-pwd',
         component: userpwd
+      },
+      {
+        path: 'art-cate',
+        component: atrcate
       }
+
     ]
   },
   {
