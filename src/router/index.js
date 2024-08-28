@@ -9,6 +9,7 @@ const user = () => import('@/view/user/userinfo.vue')
 const avatar = () => import('@/view/user/useravatar.vue')
 const userpwd = () => import('@/view/user/userpwd.vue')
 const atrcate = () => import('@/view/article/artCate.vue')
+const atrlist = () => import('@/view/article/artList.vue')
 Vue.use(VueRouter)
 
 const routes = [
@@ -33,12 +34,19 @@ const routes = [
         component: avatar
       },
       {
+        // 重置密码
         path: 'user-pwd',
         component: userpwd
       },
       {
+        // 文章分类
         path: 'art-cate',
         component: atrcate
+      },
+      {
+        // 文章列表
+        path: 'art-list',
+        component: atrlist
       }
 
     ]
