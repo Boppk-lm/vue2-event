@@ -1,51 +1,136 @@
 <!-- 文章列表 -->
 <template>
-    <div>
-        <el-card class="box-card">
-            <div slot="header" class="clearfix">
-                <span>文章列表</span>
-            </div>
-            <el-form :inline="true" :model="listform" class="demo-form-inline" style="width: 100%">
-                <!-- 文章分类 -->
-                <el-form-item label="文章分类">
-                    <el-select v-model="listform.cate_id" placeholder="请选择分类" size="small">
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item>
-                <!-- 发布状态 -->
-                <el-form-item label="发布状态" style="margin-left: 15px;">
-                    <el-select v-model="listform.state" placeholder="请选择发布状态" size="small" >
-                        <el-option label="区域一" value="shanghai"></el-option>
-                        <el-option label="区域二" value="beijing"></el-option>
-                    </el-select>
-                </el-form-item>
-                <!-- 操作 -->
-                <el-form-item>
-                    <el-button type="primary" @click="onSubmit" size="small">筛 选</el-button>
-                    <el-button type="info" @click="onSubmit" size="small">重 置</el-button>
-                </el-form-item>
-            </el-form>
-        </el-card>
-    </div>
+  <div>
+    <el-card class="box-card">
+      <div slot="header" class="clearfix">
+        <span>文章列表</span>
+      </div>
+      <el-form :inline="true" :model="listform" class="demo-form-inline" style="width: 100%">
+        <!-- 文章分类 -->
+        <el-form-item label="文章分类">
+          <el-select v-model="listform.cate_id" placeholder="请选择分类" size="small">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 发布状态 -->
+        <el-form-item label="发布状态" style="margin-left: 15px;">
+          <el-select v-model="listform.state" placeholder="请选择发布状态" size="small">
+            <el-option label="区域一" value="shanghai"></el-option>
+            <el-option label="区域二" value="beijing"></el-option>
+          </el-select>
+        </el-form-item>
+        <!-- 操作 -->
+        <el-form-item>
+          <el-button type="primary" @click="onSubmit" size="small">筛 选</el-button>
+          <el-button type="info" @click="onSubmit" size="small">重 置</el-button>
+        </el-form-item>
+        <el-form-item>
+          <el-button type="primary" class="bth-pub" size="small" @click="showdialog">发表文章</el-button>
+        </el-form-item>
+      </el-form>
+      <!-- 对话框 -->
+      <el-dialog title="发表文章" :visible.sync="dialogVisible" fullscreen :before-close="handleClose">
+        <el-form :model="pubForm" :rules="rules" ref="pubref" label-width="100px" class="demo-ruleForm">
+          <el-form-item label="文章标题" prop="title">
+            <el-input v-model="pubForm.title"></el-input>
+          </el-form-item>
+          <el-form-item label="文章分类" prop="cate_id">
+            <el-select v-model="pubForm.cate_id" placeholder="请选择活动区域" style="width: 100%;">
+              <el-option v-for="item in cate_list" :label="item.cate_name" value="item.id" :key="item.id"></el-option>
+            </el-select>
+          </el-form-item>
+          <!-- 富文本 -->
+          <el-form-item label="文章内容" prop="content">
+              <quill-editor v-model="pubForm.content"></quill-editor>
+          </el-form-item>
+        </el-form>
+      </el-dialog>
+    </el-card>
+  </div>
 </template>
 
 <script>
+import { getarticle } from '@/api/article'
+
 export default {
   name: 'art-list',
   data () {
     return {
       listform: {
-        cate_id: '',
-        state: ''
-      }
+        cate_id: '', // 文章分类
+        state: '', // 文章标题
+        content: '' // 文章内容
+      },
+      // 控制对话框的弹出
+      dialogVisible: false,
+      // 添加文章的表单数据
+      pubForm: {
+        title: '',
+        cate_id: ''
+      },
+      // 表单验证
+      rules: {
+        title: [
+          { required: true, message: '请输入文章标题', trgger: 'blur' },
+          { min: 1, max: 30, message: '文章标题长度为1-30个字符', trgger: 'blur' }
+        ],
+        cate_id: [
+          { required: true, message: '请选择文章标题', trgger: 'blur' }
+        ],
+        content: [
+          { required: true, message: '请输入文章内容', trgger: 'blur' }
+        ]
+      },
+      cate_list: []
     }
   },
   methods: {
     onSubmit () {
+    },
+    // 对话框关闭前的回调
+    handleClose (done) {
+      // 确认框
+      this.$confirm('此操作将永久删除该文件, 是否继续?', '提示', {
+        confirmButtonText: '确定',
+        cancelButtonText: '取消',
+        type: 'warning'
+      }).then(() => {
+        this.$message({
+          type: 'success',
+          message: '删除成功!'
+        })
+        this.dialogVisible = false
+      }).catch(() => {
+        this.$message({
+          type: 'info',
+          message: '已取消删除'
+        })
+      })
+    },
+    // 显示对话框
+    showdialog () {
+      this.dialogVisible = true
+    },
+    // 获取文章分类
+    async initcatelist () {
+      const { data: res } = await getarticle()
+      this.cate_list = res.data
+      console.log(this.cate_list)
     }
+  },
+  created () {
+    this.initcatelist()
   }
 }
 </script>
-
-<style></style>
+<style lang="less" scoped>
+.box-card {
+  .bth-pub {
+    margin-left: 750px;
+  }
+  ::v-deep .ql-editor {
+    min-height: 300px;
+  }
+}
+</style>
