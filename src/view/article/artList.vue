@@ -45,12 +45,17 @@
               <quill-editor v-model="pubForm.content"></quill-editor>
           </el-form-item>
           <!-- 文章封面 -->
-          <el-form-item label="文章封面">
+          <el-form-item label="文章封面" prop="cover">
             <img src="../../assets/images/cover.jpg" alt="" ref="imgref">
             <br>
             <input type="file" style="display: none;" accept="image/*" @change="changecover" ref="fileref">
             <el-button type="text" @click="coverFn">+ 选择封面</el-button>
           </el-form-item>
+          <!-- 发布或暂存 -->
+          <el-form-item>
+          <el-button type="primary"  size="small" @click="pubFn('已发布')">发布</el-button>
+          <el-button type="info"  size="small" @click="pubFn('草稿')">暂存</el-button>
+        </el-form-item>
         </el-form>
       </el-dialog>
     </el-card>
@@ -66,16 +71,18 @@ export default {
     return {
       listform: {
         cate_id: '', // 文章分类
-        state: '', // 文章标题
-        content: '' // 文章内容
+        state: '' // 文章标题
+
       },
       // 控制对话框的弹出
       dialogVisible: false,
       // 添加文章的表单数据
       pubForm: {
-        title: '',
-        cate_id: '',
-        cover_img: null
+        title: '', // 标题
+        cate_id: '', // 类别
+        cover_img: null, // 封面
+        content: '', // 文章内容
+        state: '' // 状态
       },
       // 表单验证
       rules: {
@@ -84,10 +91,13 @@ export default {
           { min: 1, max: 30, message: '文章标题长度为1-30个字符', trgger: 'blur' }
         ],
         cate_id: [
-          { required: true, message: '请选择文章标题', trgger: 'blur' }
+          { required: true, message: '请选择文章分类', trgger: 'blur' }
         ],
         content: [
           { required: true, message: '请输入文章内容', trgger: 'blur' }
+        ],
+        cover: [
+          { required: true, message: '请选择封面', trgger: 'blur' }
         ]
       },
       cate_list: []
@@ -143,6 +153,18 @@ export default {
         const url = URL.createObjectURL(files[0])
         this.$refs.imgref.setAttribute('src', url)
       }
+    },
+    // 选择状态 发布/暂存
+    pubFn (state) {
+      this.pubForm.state = state
+      // 兜底校验
+      this.$refs.pubref.validate(async valid => {
+        if (valid) {
+          console.log(11)
+        } else {
+          return false // 阻止默认提交行为
+        }
+      })
     }
   },
   created () {
