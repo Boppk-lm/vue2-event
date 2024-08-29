@@ -44,6 +44,13 @@
           <el-form-item label="文章内容" prop="content">
               <quill-editor v-model="pubForm.content"></quill-editor>
           </el-form-item>
+          <!-- 文章封面 -->
+          <el-form-item label="文章封面">
+            <img src="../../assets/images/cover.jpg" alt="" ref="imgref">
+            <br>
+            <input type="file" style="display: none;" accept="image/*" @change="changecover" ref="fileref">
+            <el-button type="text" @click="coverFn">+ 选择封面</el-button>
+          </el-form-item>
         </el-form>
       </el-dialog>
     </el-card>
@@ -52,7 +59,7 @@
 
 <script>
 import { getarticle } from '@/api/article'
-
+import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'art-list',
   data () {
@@ -67,7 +74,8 @@ export default {
       // 添加文章的表单数据
       pubForm: {
         title: '',
-        cate_id: ''
+        cate_id: '',
+        cover_img: null
       },
       // 表单验证
       rules: {
@@ -116,7 +124,25 @@ export default {
     async initcatelist () {
       const { data: res } = await getarticle()
       this.cate_list = res.data
-      console.log(this.cate_list)
+    },
+    // 选择封面 点击按钮模拟点击事件
+    coverFn () {
+      this.$refs.fileref.click()
+    },
+    // 保存选择图片的地址
+    changecover (e) {
+      const files = e.target.files
+      // 不选中
+      if (files.length === 0) {
+        this.pubForm.cover_img = null
+        // 取消变回原来的图片
+        this.$refs.imgref.setAttribute('src', imgObj)
+      } else {
+        // 选中
+        this.pubForm.cover_img = files[0]
+        const url = URL.createObjectURL(files[0])
+        this.$refs.imgref.setAttribute('src', url)
+      }
     }
   },
   created () {
