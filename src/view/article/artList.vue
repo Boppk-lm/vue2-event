@@ -5,30 +5,52 @@
       <div slot="header" class="clearfix">
         <span>文章列表</span>
       </div>
+      <!-- 搜索 -->
       <el-form :inline="true" :model="listform" class="demo-form-inline" style="width: 100%">
         <!-- 文章分类 -->
         <el-form-item label="文章分类">
           <el-select v-model="listform.cate_id" placeholder="请选择分类" size="small">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+            <el-option v-for="obj in cate_list" :key="obj.id" :label="obj.cate_name" :value="obj.id"></el-option>
           </el-select>
         </el-form-item>
         <!-- 发布状态 -->
         <el-form-item label="发布状态" style="margin-left: 15px;">
           <el-select v-model="listform.state" placeholder="请选择发布状态" size="small">
-            <el-option label="区域一" value="shanghai"></el-option>
-            <el-option label="区域二" value="beijing"></el-option>
+            <el-option label="已发布" value="已发布"></el-option>
+            <el-option label="草稿" value="草稿"></el-option>
           </el-select>
         </el-form-item>
         <!-- 操作 -->
         <el-form-item>
-          <el-button type="primary" @click="onSubmit" size="small">筛 选</el-button>
-          <el-button type="info" @click="onSubmit" size="small">重 置</el-button>
+          <el-button type="primary" @click="choseFn" size="small">筛 选</el-button>
+          <el-button type="info" @click="resetFn" size="small">重 置</el-button>
         </el-form-item>
         <el-form-item>
           <el-button type="primary" class="bth-pub" size="small" @click="showdialog">发表文章</el-button>
         </el-form-item>
       </el-form>
+      <!-- 列表 -->
+      <el-table :data="article_list" style="width: 100%">
+        <el-table-column label="文章标题" prop="title">
+        </el-table-column>
+        <el-table-column prop="cate_name" label="分类">
+        </el-table-column>
+        <el-table-column prop="pub_date" label="发表时间">
+          <!-- 作用域插槽 -->
+          <template v-slot="scope">
+            <span>{{ $formatDate(scope.row.pub_date) }}</span>
+          </template>
+        </el-table-column>
+        <el-table-column prop="state" label="状态">
+        </el-table-column>
+        <el-table-column label="操作">
+        </el-table-column>
+      </el-table>
+      <!-- 分页 -->
+      <el-pagination @size-change="handleSizeChange" @current-change="handleCurrentChange"
+        :current-page.sync="listform.pagenum" :page-sizes="[2, 3, 5, 10]" :page-size.sync="listform.pagesize"
+        layout="total, sizes, prev, pager, next, jumper" :total="total">
+      </el-pagination>
       <!-- 对话框 -->
       <el-dialog title="发表文章" :visible.sync="dialogVisible" fullscreen :before-close="handleClose" @close="closedialog">
         <el-form :model="pubForm" :rules="rules" ref="pubref" label-width="100px" class="demo-ruleForm">
@@ -42,7 +64,7 @@
           </el-form-item>
           <!-- 富文本 -->
           <el-form-item label="文章内容" prop="content">
-              <quill-editor v-model="pubForm.content" @blur="changeeditor"></quill-editor>
+            <quill-editor v-model="pubForm.content" @blur="changeeditor"></quill-editor>
           </el-form-item>
           <!-- 文章封面 -->
           <el-form-item label="文章封面" prop="cover_img">
@@ -53,9 +75,9 @@
           </el-form-item>
           <!-- 发布或暂存 -->
           <el-form-item>
-          <el-button type="primary"  size="small" @click="pubFn('已发布')">发布</el-button>
-          <el-button type="info"  size="small" @click="pubFn('草稿')">暂存</el-button>
-        </el-form-item>
+            <el-button type="primary" size="small" @click="pubFn('已发布')">发布</el-button>
+            <el-button type="info" size="small" @click="pubFn('草稿')">暂存</el-button>
+          </el-form-item>
         </el-form>
       </el-dialog>
     </el-card>
@@ -63,7 +85,7 @@
 </template>
 
 <script>
-import { getarticle, uploadarticle } from '@/api/article'
+import { getarticle, getarticlelist, uploadarticle } from '@/api/article'
 import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'art-list',
@@ -71,8 +93,9 @@ export default {
     return {
       listform: {
         cate_id: '', // 文章分类
-        state: '' // 文章标题
-
+        state: '', // 文章标题
+        pagenum: 1, // 当前页码数
+        pagesize: 2// 当前页面需要的数据条数
       },
       // 控制对话框的弹出
       dialogVisible: false,
@@ -100,12 +123,14 @@ export default {
           { required: true, message: '请选择封面', trigger: 'blur' }
         ]
       },
-      cate_list: []
+      // 分类
+      cate_list: [],
+      // 文章列表
+      article_list: [],
+      total: 0 // 列表数据总条数
     }
   },
   methods: {
-    onSubmit () {
-    },
     // 对话框关闭前的回调
     handleClose (done) {
       // 确认框
@@ -174,6 +199,8 @@ export default {
           this.$message.success(res.message)
           // 关闭对话框
           this.dialogVisible = false
+          // 刷新文章列表
+          this.getarticlelist()
         } else {
           return false // 阻止默认提交行为
         }
@@ -188,10 +215,44 @@ export default {
       this.$refs.pubref.resetFields()
       // 手动还原图片
       this.$refs.imgref.setAttribute('src', imgObj)
+    },
+    // 获取文章列表
+    async getarticlelist () {
+      const { data: res } = await getarticlelist(this.listform)
+      this.article_list = res.data
+      this.total = res.total
+    },
+    // 切换显示几条数据的回调
+    handleSizeChange (sizes) {
+      // this.listform.pagesize = sizes
+      this.listform.pagenum = 1
+      this.getarticlelist()
+    },
+    // 切换显示几页数据的回调
+    handleCurrentChange (nowPage) {
+      // this.listform.pagenum = nowPage
+      this.getarticlelist()
+    },
+    // 筛选
+    choseFn () {
+      this.listform.pagenum = 1
+      this.listform.pagesize = 2
+      this.getarticlelist()
+    },
+    // 重置
+    resetFn () {
+      this.listform.pagenum = 1
+      this.listform.pagesize = 2
+      this.listform.cate_id = ''
+      this.listform.state = ''
+      this.getarticlelist()
     }
   },
   created () {
+    // 获取文章分类
     this.initcatelist()
+    // 获取文章列表
+    this.getarticlelist()
   }
 }
 </script>
@@ -200,6 +261,7 @@ export default {
   .bth-pub {
     margin-left: 750px;
   }
+
   ::v-deep .ql-editor {
     min-height: 300px;
   }

@@ -36,3 +36,15 @@ export const uploadarticle = (fd) => {
     fd
   )
 }
+
+// 获取文章列表
+export const getarticlelist = ({ pagenum, pagesize, cate_id, state }) => {
+  return request.get('/my/article/list', {
+    params: {
+      pagenum,
+      pagesize,
+      cate_id,
+      state
+    }
+  })
+}
