@@ -30,3 +30,9 @@ export const deletearticle = (id) => {
     }
   })
 }
+// 发表文章 传入FormDate类型
+export const uploadarticle = (fd) => {
+  return request.post('/my/article/add',
+    fd
+  )
+}

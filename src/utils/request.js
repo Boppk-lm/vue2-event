@@ -35,7 +35,8 @@ myaxios.interceptors.response.use(function (response) {
     removeToken()
     store.commit('updateuser', {})
     router.push('/login')
-    return Message.error('登录已过期，请重新登录')
+    Message.error('登录已过期，请重新登录')
+    // return error
   }
   return Promise.reject(error)
 })

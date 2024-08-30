@@ -36,7 +36,6 @@ export default {
       if (files.length === 0) {
         this.avatar = ''
       } else {
-        console.log(files[0])
         // 文件->内存临时地址 (不能传给后端)
         // this.avatar = URL.createObjectURL(files[0])
 

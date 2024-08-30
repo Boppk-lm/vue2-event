@@ -95,10 +95,12 @@ router.beforeEach((to, from, next) => {
     if (!store.state.userinfo.username) {
     // 从vuex获取用户数据
       store.dispatch('getUserinfo')
+      console.log(1)
     }
     next()
   } else {
     next('/login')
+    console.log(2)
   }
 })
 export default router

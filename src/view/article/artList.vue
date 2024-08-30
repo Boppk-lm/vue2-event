@@ -30,22 +30,22 @@
         </el-form-item>
       </el-form>
       <!-- 对话框 -->
-      <el-dialog title="发表文章" :visible.sync="dialogVisible" fullscreen :before-close="handleClose">
+      <el-dialog title="发表文章" :visible.sync="dialogVisible" fullscreen :before-close="handleClose" @close="closedialog">
         <el-form :model="pubForm" :rules="rules" ref="pubref" label-width="100px" class="demo-ruleForm">
           <el-form-item label="文章标题" prop="title">
             <el-input v-model="pubForm.title"></el-input>
           </el-form-item>
           <el-form-item label="文章分类" prop="cate_id">
             <el-select v-model="pubForm.cate_id" placeholder="请选择活动区域" style="width: 100%;">
-              <el-option v-for="item in cate_list" :label="item.cate_name" value="item.id" :key="item.id"></el-option>
+              <el-option v-for="item in cate_list" :label="item.cate_name" :value="item.id" :key="item.id"></el-option>
             </el-select>
           </el-form-item>
           <!-- 富文本 -->
           <el-form-item label="文章内容" prop="content">
-              <quill-editor v-model="pubForm.content"></quill-editor>
+              <quill-editor v-model="pubForm.content" @blur="changeeditor"></quill-editor>
           </el-form-item>
           <!-- 文章封面 -->
-          <el-form-item label="文章封面" prop="cover">
+          <el-form-item label="文章封面" prop="cover_img">
             <img src="../../assets/images/cover.jpg" alt="" ref="imgref">
             <br>
             <input type="file" style="display: none;" accept="image/*" @change="changecover" ref="fileref">
@@ -63,7 +63,7 @@
 </template>
 
 <script>
-import { getarticle } from '@/api/article'
+import { getarticle, uploadarticle } from '@/api/article'
 import imgObj from '@/assets/images/cover.jpg'
 export default {
   name: 'art-list',
@@ -80,24 +80,24 @@ export default {
       pubForm: {
         title: '', // 标题
         cate_id: '', // 类别
-        cover_img: null, // 封面
+        cover_img: '', // 封面
         content: '', // 文章内容
         state: '' // 状态
       },
       // 表单验证
       rules: {
         title: [
-          { required: true, message: '请输入文章标题', trgger: 'blur' },
-          { min: 1, max: 30, message: '文章标题长度为1-30个字符', trgger: 'blur' }
+          { required: true, message: '请输入文章标题', trigger: 'blur' },
+          { min: 1, max: 30, message: '文章标题长度为1-30个字符', trigger: 'blur' }
         ],
         cate_id: [
-          { required: true, message: '请选择文章分类', trgger: 'blur' }
+          { required: true, message: '请选择文章标题', trigger: 'change' }
         ],
         content: [
-          { required: true, message: '请输入文章内容', trgger: 'blur' }
+          { required: true, message: '请输入文章内容', trigger: 'change' }
         ],
-        cover: [
-          { required: true, message: '请选择封面', trgger: 'blur' }
+        cover_img: [
+          { required: true, message: '请选择封面', trigger: 'blur' }
         ]
       },
       cate_list: []
@@ -153,6 +153,8 @@ export default {
         const url = URL.createObjectURL(files[0])
         this.$refs.imgref.setAttribute('src', url)
       }
+      // 单独验证封面
+      this.$refs.pubref.validateField('cover_img')
     },
     // 选择状态 发布/暂存
     pubFn (state) {
@@ -160,11 +162,32 @@ export default {
       // 兜底校验
       this.$refs.pubref.validate(async valid => {
         if (valid) {
-          console.log(11)
+          // 传给后台
+          const fd = new FormData()
+          fd.append('title', this.pubForm.title)
+          fd.append('cate_id', this.pubForm.cate_id)
+          fd.append('cover_img', this.pubForm.cover_img)
+          fd.append('content', this.pubForm.content)
+          fd.append('state', this.pubForm.state)
+          const { data: res } = await uploadarticle(fd)
+          if (res.code !== 0) return this.$message.error(res.message)
+          this.$message.success(res.message)
+          // 关闭对话框
+          this.dialogVisible = false
         } else {
           return false // 阻止默认提交行为
         }
       })
+    },
+    // 单独验证富文本
+    changeeditor () {
+      this.$refs.pubref.validateField('content')
+    },
+    // 关闭对话框时清除内容
+    closedialog () {
+      this.$refs.pubref.resetFields()
+      // 手动还原图片
+      this.$refs.imgref.setAttribute('src', imgObj)
     }
   },
   created () {
