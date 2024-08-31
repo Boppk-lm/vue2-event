@@ -9,9 +9,9 @@ import '@/utils/element'
 import VueQuillEditor from 'vue-quill-editor'
 
 // 富文本编辑器样式
-import 'quill/dist/quill.core.css'
-import 'quill/dist/quill.snow.css'
-import 'quill/dist/quill.bubble.css'
+// import 'quill/dist/quill.core.css'
+// import 'quill/dist/quill.snow.css'
+// import 'quill/dist/quill.bubble.css'
 // 导入时间插件
 import dayjs from 'dayjs'
 // 时间插件挂载到对象原型上
