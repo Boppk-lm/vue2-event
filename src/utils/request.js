@@ -3,10 +3,10 @@ import store from '@/store'
 import axios from 'axios'
 import { Message } from 'element-ui'
 import { removeToken } from './storage'
-
+export const baseURL = 'http://big-event-vue-api-t.itheima.net'
 // 创建axios实例 设置基地址
 const myaxios = axios.create({
-  baseURL: 'http://big-event-vue-api-t.itheima.net'
+  baseURL: baseURL
 })
 // 添加请求拦截器
 myaxios.interceptors.request.use(function (config) {

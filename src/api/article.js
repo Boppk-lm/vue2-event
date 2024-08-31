@@ -48,3 +48,20 @@ export const getarticlelist = ({ pagenum, pagesize, cate_id, state }) => {
     }
   })
 }
+
+// 获取文章详情
+export const getartdetail = (id) => {
+  return request.get('/my/article/info', {
+    params: {
+      id
+    }
+  })
+}
+// 删除文章
+export const removeartdetail = (id) => {
+  return request.delete('/my/article/info', {
+    params: {
+      id
+    }
+  })
+}

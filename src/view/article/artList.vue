@@ -32,6 +32,10 @@
       <!-- 列表 -->
       <el-table :data="article_list" style="width: 100%">
         <el-table-column label="文章标题" prop="title">
+          <!-- 作用域插槽 -->
+          <template v-slot="scope">
+            <el-link type="primary" @click="showDetailFn(scope.row.id)">{{ scope.row.title }}</el-link>
+          </template>
         </el-table-column>
         <el-table-column prop="cate_name" label="分类">
         </el-table-column>
@@ -44,6 +48,9 @@
         <el-table-column prop="state" label="状态">
         </el-table-column>
         <el-table-column label="操作">
+          <template v-slot="{ row }">
+          <el-button type="danger" size="mini" @click="removefn(row.id)">删除</el-button>
+          </template>
         </el-table-column>
       </el-table>
       <!-- 分页 -->
@@ -51,7 +58,7 @@
         :current-page.sync="listform.pagenum" :page-sizes="[2, 3, 5, 10]" :page-size.sync="listform.pagesize"
         layout="total, sizes, prev, pager, next, jumper" :total="total">
       </el-pagination>
-      <!-- 对话框 -->
+      <!-- 发布文章对话框 -->
       <el-dialog title="发表文章" :visible.sync="dialogVisible" fullscreen :before-close="handleClose" @close="closedialog">
         <el-form :model="pubForm" :rules="rules" ref="pubref" label-width="100px" class="demo-ruleForm">
           <el-form-item label="文章标题" prop="title">
@@ -80,13 +87,30 @@
           </el-form-item>
         </el-form>
       </el-dialog>
+      <!-- 文章详情对话框 -->
+      <el-dialog title="文章预览" :visible.sync="detailVisible" width="80%" >
+        <h1 class="title">{{detaillist.title}}</h1>
+        <div class="info">
+          <span>作者：{{detaillist.nickname || detaillist.username}}</span>
+          <span>发布时间：{{ $formatDate(detaillist.pub_date) }}</span>
+          <span>所属分类：{{ detaillist.cate_name }}</span>
+          <span>状态：{{ detaillist.state }}</span>
+        </div>
+        <!-- 分割线 -->
+        <el-divider></el-divider>
+        <!-- 文章封面  -->
+         <img  :src="baseURL+detaillist.cover_img" alt="">
+         <!-- 文章内容 -->
+          <div v-html="detaillist.content" class="detail-box"></div>
+      </el-dialog>
     </el-card>
   </div>
 </template>
 
 <script>
-import { getarticle, getarticlelist, uploadarticle } from '@/api/article'
+import { getartdetail, getarticle, getarticlelist, removeartdetail, uploadarticle } from '@/api/article'
 import imgObj from '@/assets/images/cover.jpg'
+import { baseURL } from '@/utils/request'
 export default {
   name: 'art-list',
   data () {
@@ -127,7 +151,12 @@ export default {
       cate_list: [],
       // 文章列表
       article_list: [],
-      total: 0 // 列表数据总条数
+      total: 0, // 列表数据总条数
+      // 文章详情
+      detailVisible: false,
+      detaillist: {},
+      // 基地址封装
+      baseURL: baseURL
     }
   },
   methods: {
@@ -246,6 +275,27 @@ export default {
       this.listform.cate_id = ''
       this.listform.state = ''
       this.getarticlelist()
+    },
+    // 点击获取文章详情
+    async showDetailFn (id) {
+      const { data: res } = await getartdetail(id)
+      this.detailVisible = true
+      this.detaillist = res.data
+      // 转换图片格式s
+      console.log(this.detaillist)
+    },
+    // 删除文章
+    async removefn (id) {
+      const { data: res } = await removeartdetail(id)
+      if (res.code !== 0) return this.$message.error('删除失败')
+      this.$message.success(res.message)
+      // 解决页面单条数据删除bug
+      if (this.article_list.length === 1) {
+        if (this.listform.pagenum > 1) {
+          this.listform.pagenum--
+        }
+      }
+      this.getarticlelist()
     }
   },
   created () {
@@ -261,9 +311,12 @@ export default {
   .bth-pub {
     margin-left: 750px;
   }
-
+// 样式穿透
   ::v-deep .ql-editor {
     min-height: 300px;
+  }
+  .info span:nth-of-type(n+2) {
+    margin-left: 5px;
   }
 }
 </style>
