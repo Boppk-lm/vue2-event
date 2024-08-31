@@ -1,324 +1,421 @@
 <template>
-    <div>
-        <!-- 头部 -->
-        <div class="container-head">
-            <el-row :gutter="10">
-                <el-col :sm="6" :xs="12">
-                    <div class="spannel">
-                        <em>10015</em><span>篇</span>
-                    <b>总文章数</b>
-                    </div>
-                </el-col>
-                <el-col :sm="6" :xs="12">
-                    <div class="spannel color1">
-                        <em>123</em><span>篇</span>
-                    <b>日新增文章数</b>
-                    </div>
-                </el-col>
-                <el-col :sm="6" :xs="12">
-                    <div class="spannel color2">
-                        <em>35</em><span>条</span>
-                    <b>评论总数</b>
-                    </div>
-                </el-col>
-                <el-col :sm="6" :xs="12">
-                    <div class="spannel color3">
-                        <em>123</em><span>条</span>
-                    <b>日新增评论数</b>
-                    </div>
-                </el-col>
-            </el-row>
-        </div>
-        <!-- 主体 -->
-         <div class="container-main">
-            <el-row :gutter="10">
-                <el-col :sm="16" :xs="16">
-                    <div class="gragh_pannel" id="curve_show">
-                    </div>
-                </el-col>
-                <el-col :sm="8" :xs="8">
-                    <div class="gragh_pannel" id="pie_show">
-                    </div>
-                </el-col>
-            </el-row>
-         </div>
-         <!-- 底部 -->
-          <div class="container-foot">
-            <div class="column_pannel" id="column_show"></div>
+  <div>
+    <div class="container-fluid">
+      <el-row class="spannel_list" :gutter="10">
+        <el-col :sm="6" :xs="12">
+          <div class="spannel">
+            <em>10015</em><span>篇</span>
+            <b>总文章数</b>
           </div>
+        </el-col>
+        <el-col :sm="6" :xs="12">
+          <div class="spannel scolor01">
+            <em>123</em><span>篇</span>
+            <b>日新增文章数</b>
+          </div>
+        </el-col>
+        <el-col :sm="6" :xs="12">
+          <div class="spannel scolor02">
+            <em>35</em><span>条</span>
+            <b>评论总数</b>
+          </div>
+        </el-col>
+        <el-col :sm="6" :xs="12">
+          <div class="spannel scolor03">
+            <em>123</em><span>条</span>
+            <b>日新增评论数</b>
+          </div>
+        </el-col>
+      </el-row>
     </div>
+
+    <div class="container-fluid">
+      <el-row class="curve-pie" :gutter="10">
+        <el-col :sm="16" :xs="16">
+          <div class="gragh_pannel" id="curve_show"></div>
+        </el-col>
+        <el-col :sm="8" :xs="8">
+          <div class="gragh_pannel" id="pie_show"></div>
+        </el-col>
+      </el-row>
+    </div>
+
+    <div class="container-fluid">
+      <div class="column_pannel" id="column_show"></div>
+    </div>
+  </div>
 </template>
 
 <script>
+
 import * as echarts from 'echarts'
 export default {
   name: 'my-home',
   mounted () {
-    // 初始化折线图
-    this.initCurveFn()
-    // 初始化饼图
-    this.initPieFn()
-    // 初始化柱状图
-    this.initColumnFn()
+    this.setCurveChartFn()
+    this.picChartFn()
+    this.columnChartFn()
   },
   methods: {
-    // 折线图
-    initCurveFn () {
-      // 基于准备好的dom，初始化echarts实例
-      const myChart = echarts.init(document.getElementById('curve_show'))
-      // 指定图表的配置项和数据
-      const option = {
-        xAxis: {
-          type: 'category',
-          boundaryGap: false,
-          data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
-        },
-        yAxis: {
-          type: 'value'
-        },
-        series: [
-          {
-            data: [820, 932, 901, 934, 1290, 1330, 1320],
-            type: 'line',
-            areaStyle: {}
-          }
-        ]
+    // 1.面积图
+    // 设置面积图
+    setCurveChartFn () {
+    // 基于准备好的dom，初始化echarts实例
+      const curveChart = echarts.init(document.getElementById('curve_show'))
+      // 绘制面积图表
+      // 数据源(模拟后台返回的数据)
+      const aListAll = [
+        { count: 36, date: '2019-04-13' },
+        { count: 52, date: '2019-04-14' },
+        { count: 78, date: '2019-04-15' },
+        { count: 85, date: '2019-04-16' },
+        { count: 65, date: '2019-04-17' },
+        { count: 72, date: '2019-04-18' },
+        { count: 88, date: '2019-04-19' },
+        { count: 64, date: '2019-04-20' },
+        { count: 72, date: '2019-04-21' },
+        { count: 90, date: '2019-04-22' },
+        { count: 96, date: '2019-04-23' },
+        { count: 100, date: '2019-04-24' },
+        { count: 102, date: '2019-04-25' },
+        { count: 110, date: '2019-04-26' },
+        { count: 123, date: '2019-04-27' },
+        { count: 100, date: '2019-04-28' },
+        { count: 132, date: '2019-04-29' },
+        { count: 146, date: '2019-04-30' },
+        { count: 200, date: '2019-05-01' },
+        { count: 180, date: '2019-05-02' },
+        { count: 163, date: '2019-05-03' },
+        { count: 110, date: '2019-05-04' },
+        { count: 80, date: '2019-05-05' },
+        { count: 82, date: '2019-05-06' },
+        { count: 70, date: '2019-05-07' },
+        { count: 65, date: '2019-05-08' },
+        { count: 54, date: '2019-05-09' },
+        { count: 40, date: '2019-05-10' },
+        { count: 45, date: '2019-05-11' },
+        { count: 38, date: '2019-05-12' }
+      ]
+
+      // 但是图标要求直接给数字的值, 所以要把对象的值取出来形成2个只有值的数组
+      const aCount = []
+      const aDate = []
+
+      for (let i = 0; i < aListAll.length; i++) {
+        aCount.push(aListAll[i].count)
+        aDate.push(aListAll[i].date)
       }
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option)
-    },
-    // 饼图
-    initPieFn () {
-      // 基于准备好的dom，初始化echarts实例
-      const myChart = echarts.init(document.getElementById('pie_show'))
-      // 指定图表的配置项和数据
-      const option = {
-        tooltip: {
-          trigger: 'item'
+
+      // 面积图的echarts配置项(参考文档复制)
+      const chartopt = {
+        title: {
+          text: '月新增文章数', // 标题
+          left: 'center', // 位置居中
+          top: '10' // 标题距离容器顶部px
         },
-        legend: {
-          top: '5%',
-          left: 'center'
+        tooltip: { // 提示框组件
+          trigger: 'axis' // 坐标轴触发(鼠标放在坐标轴就能出提示框)
         },
-        series: [
+        legend: { // 图例组件(每种颜色的意思)
+          data: ['新增文章'], // 图例文字解释(要和series里name对应)
+          top: '40' // 距离容器顶部px
+        },
+        toolbox: { // 工具栏
+          show: true, // 要显示
+          feature: { // 各工具配置项
+            mark: { show: true }, // 辅助线开关
+            dataView: { show: true, readOnly: false }, // 数据视图工具，可以展现当前图表所用的数据，编辑后可以动态更新。
+            magicType: { show: true, type: ['line', 'bar'] }, // 动态类型切换
+            restore: { show: true }, // 配置项还原
+            saveAsImage: { show: true } // 点击保存下载图片
+          }
+        },
+        xAxis: [ // 水平轴显示
           {
-            name: 'Access From',
-            type: 'pie',
-            radius: ['40%', '70%'],
-            avoidLabelOverlap: false,
-            label: {
-              show: false,
-              position: 'center'
-            },
-            emphasis: {
-              label: {
-                show: true,
-                fontSize: 40,
-                fontWeight: 'bold'
+            name: '日',
+            type: 'category',
+            boundaryGap: false, // 坐标轴两边留白策略 (不留白)
+            data: aDate // 水平轴上的数字数据 (时间)
+          }
+        ],
+        yAxis: [ // 垂直轴显示
+          {
+            name: '月新增文章数',
+            type: 'value' // 以series里的data值做划分段
+          }
+        ],
+        series: [ // 系列(控制图表类型和数据)
+          {
+            name: '新增文章',
+            type: 'line', // 折线图
+            smooth: true, // 是否平滑视觉引导线，默认不平滑，可以设置成 true 平滑显示
+            areaStyle: { type: 'default' }, // 区域填充样式。设置后显示成区域面积图。
+            itemStyle: { color: '#f80', lineStyle: { color: '#f80' } }, // 折线拐点标志的样式。
+            data: aCount // 真正数据源(用下标和x轴数组对应)
+          }
+        ],
+        grid: { // 直角坐标系内绘图网格
+          show: true,
+          x: 50, // grid 组件离容器偏移量, 左侧
+          x2: 50, // 右侧
+          y: 80, // 上
+          height: 220 // 高度
+        }
+      }
+
+      curveChart.setOption(chartopt)
+    },
+
+    // 2.饼图
+    picChartFn () {
+      const oPie = echarts.init(document.getElementById('pie_show'))
+      const oPieopt = {
+        title: {
+          top: 10,
+          text: '分类文章数量比',
+          x: 'center'
+        },
+        tooltip: {
+          trigger: 'item', // 在图形上才会触发提示
+          formatter: '{a} <br/>{b} : {c} ({d}%)' // 提示的文字显示的格式
+          // a: 系列名
+          // b: 数据名
+          // c: 数值
+          // d: 百分比 (只有饼状图生效)
+        },
+        color: ['#5885e8', '#13cfd5', '#00ce68', '#ff9565'], // 系列颜色
+        legend: { // 图例组件
+          x: 'center',
+          top: 65,
+          data: ['奇趣事', '会生活', '爱旅行', '趣美味'] // 每个部分对应的数据名(要和series里name对应)
+        },
+        toolbox: { // 工具箱
+          show: true,
+          x: 'center',
+          top: 35,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: {
+              show: true,
+              type: ['pie', 'funnel'],
+              option: {
+                funnel: {
+                  x: '25%',
+                  width: '50%',
+                  funnelAlign: 'left',
+                  max: 1548
+                }
               }
             },
-            labelLine: {
-              show: false
-            },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
+        },
+        series: [
+          {
+            name: '访问来源',
+            type: 'pie',
+            radius: ['45%', '60%'],
+            center: ['50%', '65%'],
             data: [
-              { value: 1048, name: 'Search Engine' },
-              { value: 735, name: 'Direct' },
-              { value: 580, name: 'Email' },
-              { value: 484, name: 'Union Ads' },
-              { value: 300, name: 'Video Ads' }
+              { value: 300, name: '奇趣事' },
+              { value: 100, name: '会生活' },
+              { value: 260, name: '爱旅行' },
+              { value: 180, name: '趣美味' }
             ]
           }
         ]
       }
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option)
+      oPie.setOption(oPieopt)
     },
-    // 柱状图
-    initColumnFn () {
-      // 基于准备好的dom，初始化echarts实例
-      const myChart = echarts.init(document.getElementById('column_show'))
-      // 指定图表的配置项和数据
-      const option = {
-        tooltip: {
-          trigger: 'axis',
-          axisPointer: {
-            type: 'shadow'
-          }
+
+    // 3.
+    columnChartFn () {
+      const oColumn = echarts.init(document.getElementById('column_show'))
+      const oColumnopt = {
+        title: {
+          text: '文章访问量',
+          left: 'center',
+          top: '10'
         },
-        legend: {},
-        grid: {
-          left: '3%',
-          right: '4%',
-          bottom: '3%',
-          containLabel: true
+        tooltip: {
+          trigger: 'axis'
+        },
+        legend: {
+          data: ['奇趣事', '会生活', '爱旅行', '趣美味'],
+          top: '40'
+        },
+        toolbox: {
+          show: true,
+          feature: {
+            mark: { show: true },
+            dataView: { show: true, readOnly: false },
+            magicType: { show: true, type: ['line', 'bar'] },
+            restore: { show: true },
+            saveAsImage: { show: true }
+          }
         },
         xAxis: [
           {
             type: 'category',
-            data: ['Mon', 'Tue', 'Wed', 'Thu', 'Fri', 'Sat', 'Sun']
+            data: ['1月', '2月', '3月', '4月', '5月']
           }
         ],
         yAxis: [
           {
+            name: '访问量',
             type: 'value'
           }
         ],
         series: [
           {
-            name: 'Direct',
+            name: '奇趣事',
             type: 'bar',
-            emphasis: {
-              focus: 'series'
+            barWidth: 20,
+            areaStyle: { type: 'default' },
+            itemStyle: {
+              color: '#fd956a'
             },
-            data: [320, 332, 301, 334, 390, 330, 320]
+            data: [800, 708, 920, 1090, 1200]
           },
           {
-            name: 'Email',
+            name: '会生活',
             type: 'bar',
-            stack: 'Ad',
-            emphasis: {
-              focus: 'series'
+            barWidth: 20,
+            areaStyle: { type: 'default' },
+            itemStyle: {
+              color: '#2bb6db'
             },
-            data: [120, 132, 101, 134, 90, 230, 210]
+            data: [400, 468, 520, 690, 800]
           },
           {
-            name: 'Union Ads',
+            name: '爱旅行',
             type: 'bar',
-            stack: 'Ad',
-            emphasis: {
-              focus: 'series'
+            barWidth: 20,
+            areaStyle: { type: 'default' },
+            itemStyle: {
+              color: '#13cfd5'
             },
-            data: [220, 182, 191, 234, 290, 330, 310]
+            data: [500, 668, 520, 790, 900]
           },
           {
-            name: 'Video Ads',
+            name: '趣美味',
             type: 'bar',
-            stack: 'Ad',
-            emphasis: {
-              focus: 'series'
+            barWidth: 20,
+            areaStyle: { type: 'default' },
+            itemStyle: {
+              color: '#00ce68'
             },
-            data: [150, 232, 201, 154, 190, 330, 410]
-          },
+            data: [600, 508, 720, 890, 1000]
+          }
+        ],
+        grid: {
+          show: true,
+          x: 50,
+          x2: 30,
+          y: 80,
+          height: 260
+        },
+        dataZoom: [ // 给x轴设置滚动条
           {
-            name: 'Search Engine',
-            type: 'bar',
-            data: [862, 1018, 964, 1026, 1679, 1600, 1570],
-            emphasis: {
-              focus: 'series'
-            },
-            markLine: {
-              lineStyle: {
-                type: 'dashed'
-              },
-              data: [[{ type: 'min' }, { type: 'max' }]]
+            start: 0, // 默认为0
+            end: 100 - 1000 / 31, // 默认为100
+            type: 'slider',
+            show: true,
+            xAxisIndex: [0],
+            handleSize: 0, // 滑动条的 左右2个滑动条的大小
+            height: 8, // 组件高度
+            left: 45, // 左边的距离
+            right: 50, // 右边的距离
+            bottom: 26, // 右边的距离
+            handleColor: '#ddd', // h滑动图标的颜色
+            handleStyle: {
+              borderColor: '#cacaca',
+              borderWidth: '1',
+              shadowBlur: 2,
+              background: '#ddd',
+              shadowColor: '#ddd'
             }
-          },
-          {
-            name: 'Baidu',
-            type: 'bar',
-            barWidth: 5,
-            stack: 'Search Engine',
-            emphasis: {
-              focus: 'series'
-            },
-            data: [620, 732, 701, 734, 1090, 1130, 1120]
-          },
-          {
-            name: 'Google',
-            type: 'bar',
-            stack: 'Search Engine',
-            emphasis: {
-              focus: 'series'
-            },
-            data: [120, 132, 101, 134, 290, 230, 220]
-          },
-          {
-            name: 'Bing',
-            type: 'bar',
-            stack: 'Search Engine',
-            emphasis: {
-              focus: 'series'
-            },
-            data: [60, 72, 71, 74, 190, 130, 110]
-          },
-          {
-            name: 'Others',
-            type: 'bar',
-            stack: 'Search Engine',
-            emphasis: {
-              focus: 'series'
-            },
-            data: [62, 82, 91, 84, 109, 110, 120]
           }
         ]
       }
-      // 使用刚指定的配置项和数据显示图表。
-      myChart.setOption(option)
+      oColumn.setOption(oColumnopt)
     }
   }
 }
 </script>
 
 <style lang="less" scoped>
-.el-row {
-    margin-bottom: 20px;
-    &:last-child {
-        margin-bottom: 0;
-    }
+.spannel_list {
+  margin-top: 20px;
 }
 
-.el-col {
-    border-radius: 4px;
+.spannel {
+  height: 100px;
+  overflow: hidden;
+  text-align: center;
+  position: relative;
+  background-color: #fff;
+  border: 1px solid #e7e7e9;
+  margin-bottom: 20px;
 }
 
-.row-bg {
-    padding: 10px 0;
-    background-color: #f9fafc;
+.spannel em {
+  font-style: normal;
+  font-size: 50px;
+  line-height: 50px;
+  display: inline-block;
+  margin: 10px 0 0 20px;
+  font-family: 'Arial';
+  color: #83a2ed;
 }
-.container-head {
-    .spannel {
-    line-height: 90px;
-    text-align: center;
-    background-color: #ffffff;
-    color: #7fa3ee;
-    em {
-        font-style: normal;
-        font-size: 46px;
-        font-weight: 500;
-    }
-    span {
-        margin: 7px;
-    }
-    b {
-        line-height: 25px;
-        display: block;
-        background-color: #e5e5e5;
-        color: #000;
-        font-weight: normal;
-    }
+
+.spannel span {
+  font-size: 14px;
+  display: inline-block;
+  color: #83a2ed;
+  margin-left: 10px;
 }
-.color1 {
-        color: #66bbd9;
-    }
-    .color2 {
-        color: #58cbde;
-    }
-    .color3 {
-        color: #53c291;
-    }
+
+.spannel b {
+  position: absolute;
+  left: 0;
+  bottom: 0;
+  width: 100%;
+  line-height: 24px;
+  background: #e5e5e5;
+  color: #333;
+  font-size: 14px;
+  font-weight: normal;
 }
-.container-main {
-    margin-top: 20px;
-    .gragh_pannel{
-        height: 500px;
-        background-color: #fff;
-    }
+
+.scolor01 em,
+.scolor01 span {
+  color: #6ac6e2;
 }
-.container-foot {
-    .column_pannel{
-        margin-top: 20px;
-        height: 250px;
-        background-color: #fff;
-    }
+
+.scolor02 em,
+.scolor02 span {
+  color: #5fd9de;
+}
+
+.scolor03 em,
+.scolor03 span {
+  color: #58d88e;
+}
+
+.gragh_pannel {
+  height: 350px;
+  border: 1px solid #e7e7e9;
+  background-color: #fff !important;
+  margin-bottom: 20px;
+}
+
+.column_pannel {
+  margin-bottom: 20px;
+  height: 400px;
+  border: 1px solid #e7e7e9;
+  background-color: #fff !important;
 }
 </style>
